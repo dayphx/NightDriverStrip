@@ -3,4 +3,6 @@
 NightDriverStrip.code-workspace
 src/uzlib/src/*.o
 .history
+include/secrets.h
+lib/*
 

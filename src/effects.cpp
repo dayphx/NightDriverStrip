@@ -259,6 +259,8 @@ unique_ptr<LEDStripEffect> GetSpectrumAnalyzer(CRGB color)
 }
 #endif
 
+CRGB mult = CRGB::Black; float prob = 0.9; // These constants are referenced by several project's effects
+
 // AllEffects
 // 
 // A list of internal effects, if any.  
@@ -315,7 +317,19 @@ DRAM_ATTR LEDStripEffect * AllEffects[] =
     new SparklySpinningMusicEffect(RainbowColors_p), 
     new MoltenGlassOnVioletBkgnd(RainbowColors_p),
 */
-          
+
+  #elif CUBE
+    // Simple rainbow pallette
+    new PaletteEffect(rainbowPalette, 256/16, .2, 0),
+
+    new SparklySpinningMusicEffect("SparklySpinningMusical", RainbowColors_p), 
+    new ColorBeatOverRedBkgnd("ColorBeatOnRedBkgnd"),
+    new ColorBeatWithFlash("ColorBeatWithFlash"),
+    new SimpleInsulatorBeatEffect2("SimpleInsulatorColorBeat"),
+    new InsulatorSpectrumEffect("InsulatorSpectrumEffect"),
+    new StarryNightEffect<MusicStar>("Rainbow Music Stars", RainbowColors_p, 2.0, 2, LINEARBLEND, 5.0, 0.0, 10.0), // Rainbow Music Star
+
+    new FireFanEffect(NUM_LEDS,      1, 15, 80, 2, 7, Sequential, true, false),
 
   #elif BELT
 
@@ -534,7 +548,7 @@ DRAM_ATTR LEDStripEffect * AllEffects[] =
 
 #elif LEDSTRIP
     // new PaletteEffect(RainbowStripeColors_p, 8.0, .125, 0, 5, 1), // Rainbow palette
-    new StatusEffect(CRGB::Blue)
+    new StatusEffect(CRGB::White)
 
 #elif HOODORNAMENT
 

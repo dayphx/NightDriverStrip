@@ -58,9 +58,10 @@
 //              Apr-23-2021  v016       Davepl      Fix max power limit!
 //              Apr-24-2021  v017       Davepl      Fix compressed frames - stable!
 //              May-01-2021  v018       Davepl      Put recive timeout back in, cRec'd to 0
-//              Jun-17-2022  v019       Davepl      Atomlight2 + variable FPS
-//              Jul-08-2022  v020       Davepl      Particle System, Insulators, lib deps
-//              Sep-18-2022  v021       Davepl      Github Release
+//              Jun-17-2021  v019       Davepl      Atomlight2 + variable FPS
+//              Jul-08-2021  v020       Davepl      Particle System, Insulators, lib deps
+//              Sep-18-2021  v021       Davepl      Github Release
+//              Nov-07-2021  v022       Davepl      Rev'd with new Github PRs to date
 //---------------------------------------------------------------------------
 
 // The goal here is to get two variables, one numeric and one string, from the *same* version
@@ -71,7 +72,7 @@
 //
 // If you know a cleaner way, please improve this!
 
-#define FLASH_VERSION          0211  // Upate ONLY this to increment the version number
+#define FLASH_VERSION          022  // Upate ONLY this to increment the version number
 
 #define XSTR(x) STR(x)              // The defs will generate the stringized version of it
 #define STR(x) "v"#x
@@ -90,8 +91,8 @@
 #define FREQ_FROM_PERIOD(p) (1.0 / p * 1000000)				// Calculate frequency in Hz given the priod in microseconds (us)
 
 // I've built and run this on the Heltec Wifi 32 module and the M5StickC.  The
-// main difference is pinout and the LCF/TFT screen.  The presense of absense
-// of the TFT/OLED is now controlled separately, but M5 is always equipped
+// main difference is pinout and the OLED/LCD screen.  The presense of absense
+// of the OLED/LCD is now controlled separately, but M5 is always equipped
 // with one (but it doesn't have to be used!).
 
 #if M5STICKC
@@ -116,7 +117,7 @@
 #define SOCKET_PRIORITY         tskIDLE_PRIORITY+2
 #define NET_PRIORITY            tskIDLE_PRIORITY+2
 #define AUDIO_PRIORITY          tskIDLE_PRIORITY+2
-#define TFT_PRIORITY            tskIDLE_PRIORITY+2
+#define SCREEN_PRIORITY         tskIDLE_PRIORITY+2
 #define DEBUG_PRIORITY          tskIDLE_PRIORITY+1
 #define REMOTE_PRIORITY         tskIDLE_PRIORITY+1
 
@@ -127,7 +128,7 @@
 // #define INCOMING_CORE           1
 // #define NET_CORE                1
 // #define AUDIO_CORE              0
-// #define TFT_CORE                1
+// #define SCREEN_CORE             1
 // #define DEBUG_CORE              1
 // #define SOCKET_CORE             1
 // #define REMOTE_CORE             1
@@ -136,7 +137,7 @@
 #define INCOMING_CORE           0
 #define NET_CORE                1
 #define AUDIO_CORE              0
-#define TFT_CORE                1
+#define SCREEN_CORE             1
 #define DEBUG_CORE              1
 #define SOCKET_CORE             1
 #define REMOTE_CORE             1
@@ -196,7 +197,7 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
 #if DEMO 
 
     // This is a simple demo configuration.  To build, simply connect the data lead from a WS2812B
-    // strip to pin 5.  This does not use the TFT, OLED, or anything fancy, it simply drives the
+    // strip to pin 5.  This does not use the OLED, LCD, or anything fancy, it simply drives the
     // LEDs with a simple rainbow effect as specified in effects.cpp for DEMO.
     //
     // Please ensure you supply sufficent power to your strip, as even the DEMO of 144 LEDs, if set
@@ -272,7 +273,7 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
 #elif SPECTRUM
 
     // This project is set up as a 48x16 matrix of 16x16 WS2812B panels such as: https://amzn.to/3ABs5DK
-    // It uses an M5StickCPlus which has a microphone and OLED built in:  https://amzn.to/3CrvCFh
+    // It uses an M5StickCPlus which has a microphone and LCD built in:  https://amzn.to/3CrvCFh
     // It displays a spectrum analyzer and music visualizer
     
     #define ENABLE_WIFI             1   // Connect to WiFi
@@ -328,7 +329,7 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
     #define RESERVE_MEMORY  120000                  // How much to leave free for system operation (it's not stable in low mem)
     #define ENABLE_REMOTE   0                       // IR Remote Control
     #define ENABLE_AUDIO    1                       // Listen for audio from the microphone and process it
-    #define USE_TFT         0                       // Normally we use a tiny board inside the lamp with no screen
+    #define USE_SCREEN      0                       // Normally we use a tiny board inside the lamp with no screen
     #define FAN_SIZE        NUM_LEDS                // Allows us to use fan effects on the spokes
     #define NUM_FANS        1                       // Our fans are on channels, not in sequential order, so only one "fan"
     #define NUM_RINGS       1   
@@ -414,7 +415,7 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
     #define MATRIX_WIDTH    (8*144)   
     #define MATRIX_HEIGHT   1
     #define NUM_LEDS        (MATRIX_WIDTH * MATRIX_HEIGHT)
-    #define RESERVE_MEMORY  200000                // WiFi needs about 100K free to be able to (re)connect!
+    #define RESERVE_MEMORY  180000                // WiFi needs about 100K free to be able to (re)connect!
     #define ENABLE_REMOTE   0                     // IR Remote Control
     #define ENABLE_AUDIO    0                     // Listen for audio from the microphone and process it
 
@@ -463,7 +464,7 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
     #define MATRIX_HEIGHT   1
     #define RESERVE_MEMORY  150000
     #define ENABLE_REMOTE   1                     // IR Remote Control
-    #define FAN_SIZE        NUM_LEDS
+    #define FAN_SIZE        1
     #define NUM_FANS        1
     #define ENABLE_AUDIO    1
     #define LED_FAN_OFFSET_BU  0                    
@@ -473,6 +474,7 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
     #define IR_REMOTE_PIN 36
     #define POWER_LIMIT_MW (1000 * 12 * 8)
     #define ENABLE_AUDIO    1                     // Listen for audio from the microphone and process it
+    #define NUM_BANDS      16
 
     #if M5STICKC || M5STICKCPLUS
         #define LED_PIN0 26
@@ -481,6 +483,9 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
     #endif
 
     #define DEFAULT_EFFECT_INTERVAL     (5*60*24)
+
+    #define NOISE_CUTOFF   75
+    #define NOISE_FLOOR    200.0f
 
 #elif FANSET
 
@@ -610,6 +615,43 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
 
     #define TOGGLE_BUTTON  37
     #define NUM_INFO_PAGES 1
+
+#elif CUBE
+
+    // A cube of 5 x 5 x 5 LEDs
+
+    #define ENABLE_WIFI             1   // Connect to WiFi
+    #define INCOMING_WIFI_ENABLED   1   // Accepting incoming color data and commands
+    #define WAIT_FOR_WIFI           0   // Hold in setup until we have WiFi - for strips without effects
+    #define TIME_BEFORE_LOCAL       5   // How many seconds before the cube times out and shows local content
+    #define ENABLE_WEBSERVER        1   // Enable the webserver to control the effects
+
+    #define DEFAULT_EFFECT_INTERVAL     (1000 * 60 * 10)    // 10 min
+
+    #define LED_PIN0          26
+    #define NUM_CHANNELS      1
+    #define RING_SIZE_0       25                    // Treat each layer as one ring
+    #define BONUS_PIXELS      0
+    #define MATRIX_WIDTH      5                     // 5 layers
+    #define MATRIX_HEIGHT     RING_SIZE_0
+    #define NUM_FANS          MATRIX_WIDTH
+    #define FAN_SIZE          MATRIX_HEIGHT
+    #define NUM_BANDS         16
+    #define NUM_LEDS          (MATRIX_WIDTH*MATRIX_HEIGHT)
+    #define RESERVE_MEMORY    150000
+    #define ENABLE_REMOTE     0                     // IR Remote Control
+    #define ENABLE_AUDIO      1                     // Listen for audio from the microphone and process it
+    #define IR_REMOTE_PIN     26                    
+    #define LED_FAN_OFFSET_BU 6
+    #define POWER_LIMIT_MW    5000
+
+    #define NOISE_CUTOFF   75
+    #define NOISE_FLOOR    200.0f
+
+    #define TOGGLE_BUTTON  37
+    #define NUM_INFO_PAGES 1
+
+    #define COLOR_ORDER EOrder::RGB
 #endif
 
 
@@ -672,6 +714,10 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
 #define NUM_INFO_PAGES 1
 #endif
 
+#ifndef COLOR_ORDER
+#define COLOR_ORDER EOrder::GRB
+#endif
+
 // Define fan ordering for drawing into the fan directionally
 
 #define LED_FAN_OFFSET_LR  (LED_FAN_OFFSET_BU + (FAN_SIZE * 1 / 4))         // High level stuff right here!
@@ -728,12 +774,33 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
 #define POWER_LIMIT_MW 500*5                // Define for your power supply, default is a low 2500mA for USB
 #endif
 
-#ifndef USE_TFT
-#define USE_TFT 0
+// Display
+// 
+// Enable USE_OLED or USE_TFT based on selected board defination
+// These board definations are added by platformio
+
+#if USE_SCREEN
+
+    #ifdef ARDUINO_HELTEC_WIFI_KIT_32                         // screen definations for heltec_wifi_kit_32 or heltec_wifi_kit_32_v2
+
+        #define USE_OLED 1                                    // Enable the Heltec's monochrome OLED
+
+    #elif defined(ARDUINO_M5Stick_C)                          // screen definitions for m5stick-c (or m5stick-c plus)
+
+        #define USE_TFT 1                                     // enable the M5's LCD screen
+
+    #else                                                     // unsupported board defined in platformio
+        #error Unknown Display! Check platformio.ini board definition.
+    #endif
+
+#endif // end USE_SCREEN
+
+#ifndef USE_OLED                            
+#define USE_OLED 0
 #endif
 
-#ifndef USE_OLED
-#define USE_OLED 0
+#ifndef USE_TFT                            
+#define USE_TFT 0
 #endif
 
 // gRingSizeTable
@@ -786,11 +853,11 @@ extern DRAM_ATTR const int gRingSizeTable[];
 // 
 // Headers that are only included when certain features are enabled
 
-#if USE_TFT
-#include <U8g2lib.h>                // So we can talk to the CUU text
-#include <gfxfont.h>                // Adafruit GFX for the panels
-#include <Fonts/FreeSans9pt7b.h>    // A nice font for the VFD
-#include <Adafruit_GFX.h>           // GFX wrapper so we can draw on matrix
+#if USE_OLED
+#include <U8g2lib.h>                // Library for monochrome displays
+#include <gfxfont.h>                // Adafruit GFX font structs
+#include <Fonts/FreeSans9pt7b.h>    // A nice font
+#include <Adafruit_GFX.h>           // GFX wrapper so we can draw on screen
 #endif
 
 // FPS

@@ -188,7 +188,7 @@ void IRAM_ATTR ScreenUpdateLoopEntry(void *);
 // Task Handles to our running threads
 //
 
-TaskHandle_t g_taskTFT    = nullptr;
+TaskHandle_t g_taskScreen = nullptr;
 TaskHandle_t g_taskSync   = nullptr;
 TaskHandle_t g_taskWeb    = nullptr;
 TaskHandle_t g_taskDraw   = nullptr;
@@ -371,7 +371,7 @@ void PrintOutputHeader()
 {
     debugI("NightDriverStrip\n");
     debugI("-------------------------------------------------------------------------------------");
-    debugI("M5STICKC: %d, USE_OLED: %d, USE_TFT: %d", M5STICKC, USE_OLED, USE_TFT);
+    debugI("M5STICKC: %d, USE_TFT: %d, USE_OLED: %d", M5STICKC, USE_TFT, USE_OLED);
 
     #if USE_PSRAM
         debugI("ESP32 PSRAM Init: %s", psramInit() ? "OK" : "FAIL");
@@ -460,17 +460,17 @@ void setup()
         sideButton.setPressedState(LOW);
     #endif
 
-    // Init the TFT display on the chip
+    // Init the U8G2 compatible SSD1306, 128X64 OLED display on the Heltec board
 
-#if USE_TFT
-extern U8G2_SSD1306_128X64_NONAME_F_HW_I2C g_TFT;
-    debugI("Intializizing TFT display\n");
-    g_TFT.begin();
+#if USE_OLED
+extern U8G2_SSD1306_128X64_NONAME_F_HW_I2C g_u8g2;
+    debugI("Intializizing OLED display\n");
+    g_u8g2.begin();
 #endif
 
 #if M5STICKC || M5STICKCPLUS
-    #if USE_OLED
-        debugI("Intializizing OLED display\n");
+    #if USE_TFT
+        debugI("Intializizing LCD display\n");
         M5.begin();
         M5.Lcd.setRotation(1);
         M5.Lcd.printf("NightDriver: " FLASH_VERSION_NAME);
@@ -532,51 +532,51 @@ extern U8G2_SSD1306_128X64_NONAME_F_HW_I2C g_TFT;
 #endif
 
 #if STRAND
-    FastLED.addLeds<WS2812B, LED_PIN0, RGB>(g_pStrands[0]->GetLEDBuffer(), g_pStrands[0]->GetLEDCount()); // Neopixel strand uses RGB color order, others are all GRB
-    //FastLED.addLeds<AtomiController, LED_PIN0, RGB>(g_pStrands[0]->GetLEDBuffer(), g_pStrands[0]->GetLEDCount());
+    FastLED.addLeds<WS2812B, LED_PIN0, COLOR_ORDER>(g_pStrands[0]->GetLEDBuffer(), g_pStrands[0]->GetLEDCount()); // Neopixel strand uses RGB color order, others are all GRB
+    //FastLED.addLeds<AtomiController, LED_PIN0, COLOR_ORDER>(g_pStrands[0]->GetLEDBuffer(), g_pStrands[0]->GetLEDCount());
 #elif NUM_CHANNELS == 1
     debugI("Adding %d LEDs to FastLED.", g_pStrands[0]->GetLEDCount());
-    FastLED.addLeds<WS2812B, LED_PIN0, GRB>(g_pStrands[0]->GetLEDBuffer(), 3*144);
+    FastLED.addLeds<WS2812B, LED_PIN0, COLOR_ORDER>(g_pStrands[0]->GetLEDBuffer(), 3*144);
     FastLED[0].setLeds(g_pStrands[0]->GetLEDBuffer(), g_pStrands[0]->GetLEDCount());
     FastLED.setMaxRefreshRate(0, false);  // turn OFF the refresh rate constraint
     pinMode(LED_PIN0, OUTPUT);
 #endif
 
 #if NUM_CHANNELS >= 2
-    FastLED.addLeds<WS2812B, LED_PIN0, GRB>(g_pStrands[0]->GetLEDBuffer(), g_pStrands[0]->GetLEDCount());
+    FastLED.addLeds<WS2812B, LED_PIN0, COLOR_ORDER>(g_pStrands[0]->GetLEDBuffer(), g_pStrands[0]->GetLEDCount());
     pinMode(LED_PIN0, OUTPUT);
 
-    FastLED.addLeds<WS2812B, LED_PIN1, GRB>(g_pStrands[1]->GetLEDBuffer(), g_pStrands[1]->GetLEDCount());
+    FastLED.addLeds<WS2812B, LED_PIN1, COLOR_ORDER>(g_pStrands[1]->GetLEDBuffer(), g_pStrands[1]->GetLEDCount());
     pinMode(LED_PIN1, OUTPUT);
 #endif
 
 #if NUM_CHANNELS >= 3
-    FastLED.addLeds<WS2812B, LED_PIN2, GRB>(g_pStrands[2]->GetLEDBuffer(), g_pStrands[2]->GetLEDCount());
+    FastLED.addLeds<WS2812B, LED_PIN2, COLOR_ORDER>(g_pStrands[2]->GetLEDBuffer(), g_pStrands[2]->GetLEDCount());
     pinMode(LED_PIN2, OUTPUT);
 #endif
 
 #if NUM_CHANNELS >= 4
-    FastLED.addLeds<WS2812B, LED_PIN3, GRB>(g_pStrands[3]->GetLEDBuffer(), g_pStrands[3]->GetLEDCount());
+    FastLED.addLeds<WS2812B, LED_PIN3, COLOR_ORDER>(g_pStrands[3]->GetLEDBuffer(), g_pStrands[3]->GetLEDCount());
     pinMode(LED_PIN3, OUTPUT);
 #endif
 
 #if NUM_CHANNELS >= 5
-    FastLED.addLeds<WS2812B, LED_PIN4, GRB>(g_pStrands[4]->GetLEDBuffer(), g_pStrands[4]->GetLEDCount());
+    FastLED.addLeds<WS2812B, LED_PIN4, COLOR_ORDER>(g_pStrands[4]->GetLEDBuffer(), g_pStrands[4]->GetLEDCount());
     pinMode(LED_PIN4, OUTPUT);
 #endif
 
 #if NUM_CHANNELS >= 6
-    FastLED.addLeds<WS2812B, LED_PIN5, GRB>(g_pStrands[5]->GetLEDBuffer(), g_pStrands[5]->GetLEDCount());
+    FastLED.addLeds<WS2812B, LED_PIN5, COLOR_ORDER>(g_pStrands[5]->GetLEDBuffer(), g_pStrands[5]->GetLEDCount());
     pinMode(LED_PIN5, OUTPUT);
 #endif
 
 #if NUM_CHANNELS >= 7
-    FastLED.addLeds<WS2812B, LED_PIN6, GRB>(g_pStrands[6]->GetLEDBuffer(), g_pStrands[6]->GetLEDCount());
+    FastLED.addLeds<WS2812B, LED_PIN6, COLOR_ORDER>(g_pStrands[6]->GetLEDBuffer(), g_pStrands[6]->GetLEDCount());
     pinMode(LED_PIN6, OUTPUT);
 #endif
 
 #if NUM_CHANNELS >= 8
-    FastLED.addLeds<WS2812B, LED_PIN7, GRB>(g_pStrands[7]->GetLEDBuffer(), g_pStrands[7]->GetLEDCount());
+    FastLED.addLeds<WS2812B, LED_PIN7, COLOR_ORDER>(g_pStrands[7]->GetLEDBuffer(), g_pStrands[7]->GetLEDCount());
     pinMode(LED_PIN7, OUTPUT);
 #endif
 
@@ -610,8 +610,8 @@ extern U8G2_SSD1306_128X64_NONAME_F_HW_I2C g_TFT;
     debugI("Initializing effects manager...");
     InitEffectsManager();
 
-#if USE_TFT || USE_OLED
-    xTaskCreatePinnedToCore(ScreenUpdateLoopEntry, "TFT Loop", STACK_SIZE, nullptr, TFT_PRIORITY, &g_taskTFT, TFT_CORE);
+#if USE_SCREEN
+    xTaskCreatePinnedToCore(ScreenUpdateLoopEntry, "Screen Loop", STACK_SIZE, nullptr, SCREEN_PRIORITY, &g_taskScreen, SCREEN_CORE);
 #endif
 
     debugI("Launching Drawing:");
