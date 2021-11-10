@@ -42,8 +42,8 @@ void processRemoteDebugCmd();
 extern RemoteControl g_RemoteControl;
 #endif
 
-#define cszSSID      "Your SSID"
-#define cszPassword  "Your PASS"
+#define cszSSID      "Starbucks"
+#define cszPassword  "zaq12wsxmju78ik,"
 #define cszHostname  "NightDriverStrip"
 
 bool ConnectToWiFi(uint cRetries);

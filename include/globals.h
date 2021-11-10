@@ -221,7 +221,8 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
     #define ENABLE_OTA              0   // Accept over the air flash updates
 
     #if M5STICKC || M5STICKCPLUS
-        #define LED_PIN0 32
+        // #define LED_PIN0 32
+        #define LED_PIN0 26
     #else
         #define LED_PIN0 5
     #endif
@@ -274,14 +275,14 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
     // It uses an M5StickCPlus which has a microphone and OLED built in:  https://amzn.to/3CrvCFh
     // It displays a spectrum analyzer and music visualizer
     
-    #define ENABLE_WIFI             1  // Connect to WiFi
+    #define ENABLE_WIFI             1   // Connect to WiFi
     #define INCOMING_WIFI_ENABLED   1   // Accepting incoming color data and commands
     #define WAIT_FOR_WIFI           0   // Hold in setup until we have WiFi - for strips without effects
     #define TIME_BEFORE_LOCAL       2   // How many seconds before the lamp times out and shows local content
     #define ENABLE_WEBSERVER        1   // Turn on the internal webserver
     #define ENABLE_NTP              1   // Set the clock from the web
-    #define ENABLE_OTA              0  // Accept over the air flash updates
-    #define ENABLE_REMOTE           1   // IR Remote Control
+    #define ENABLE_OTA              1   // Accept over the air flash updates
+    #define ENABLE_REMOTE           0   // IR Remote Control
     #define ENABLE_AUDIO            1   // Listen for audio from the microphone and process it
     
     #define DEFAULT_EFFECT_INTERVAL     (60*60*24)
@@ -300,7 +301,8 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
     #define RESERVE_MEMORY  150000
     #define IR_REMOTE_PIN   25                    
     #define LED_FAN_OFFSET_BU 6
-    #define POWER_LIMIT_MW  (5 * 5 * 1000)         // Expects at least a 5V, 5A supply
+    //#define POWER_LIMIT_MW  (5 * 5 * 1000)         // Expects at least a 5V, 5A supply
+    #define POWER_LIMIT_MW  (5 * 1 * 1000)         // 1A
 
     #define NOISE_CUTOFF   75
     #define NOISE_FLOOR    200.0f
