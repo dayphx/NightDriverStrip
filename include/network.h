@@ -43,12 +43,5 @@ void processRemoteDebugCmd();
 extern RemoteControl g_RemoteControl;
 #endif
 
-<<<<<<< HEAD
-#define cszSSID      "Starbucks"
-#define cszPassword  "zaq12wsxmju78ik,"
-#define cszHostname  "NightDriverStrip"
-
-=======
->>>>>>> ef1547b8583df0d4be342228792d695f90c851c9
 bool ConnectToWiFi(uint cRetries);
 void SetupOTA(const char *pszHostname);

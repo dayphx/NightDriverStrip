@@ -27,6 +27,6 @@
 //
 //---------------------------------------------------------------------------
 
-#define cszSSID       "Your SSID"
-#define cszPassword   "Your PASS"
+#define cszSSID       "Starbucks"
+#define cszPassword   "zaq12wsxmju78ik,"
 #define cszHostname   "NightDriverStrip"
